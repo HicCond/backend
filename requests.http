@@ -1,0 +1,85 @@
+### Quiz rules for the intro screen
+GET http://localhost:8080/api/v1/quiz
+Accept: application/json
+
+### All questions (never contains the correct option)
+GET http://localhost:8080/api/v1/quiz/questions
+Accept: application/json
+
+### A fully correct submission -> 1000 points, passed
+POST http://localhost:8080/api/v1/quiz/submissions
+Content-Type: application/json
+
+{
+  "answers": [
+    { "questionId": "q01", "optionId": "a" },
+    { "questionId": "q02", "optionId": "b" },
+    { "questionId": "q03", "optionId": "c" },
+    { "questionId": "q04", "optionId": "c" },
+    { "questionId": "q05", "optionId": "b" },
+    { "questionId": "q06", "optionId": "d" },
+    { "questionId": "q07", "optionId": "a" },
+    { "questionId": "q08", "optionId": "b" },
+    { "questionId": "q09", "optionId": "c" },
+    { "questionId": "q10", "optionId": "b" },
+    { "questionId": "q11", "optionId": "d" },
+    { "questionId": "q12", "optionId": "a" },
+    { "questionId": "q13", "optionId": "c" },
+    { "questionId": "q14", "optionId": "b" },
+    { "questionId": "q15", "optionId": "b" },
+    { "questionId": "q16", "optionId": "c" },
+    { "questionId": "q17", "optionId": "c" },
+    { "questionId": "q18", "optionId": "c" },
+    { "questionId": "q19", "optionId": "c" },
+    { "questionId": "q20", "optionId": "c" }
+  ]
+}
+
+### Exactly 600 points -> fails, because passing requires more than 600
+### (q01-q07 correct: 3 x 100 + 4 x 75 = 600)
+POST http://localhost:8080/api/v1/quiz/submissions
+Content-Type: application/json
+
+{
+  "answers": [
+    { "questionId": "q01", "optionId": "a" },
+    { "questionId": "q02", "optionId": "b" },
+    { "questionId": "q03", "optionId": "c" },
+    { "questionId": "q04", "optionId": "c" },
+    { "questionId": "q05", "optionId": "b" },
+    { "questionId": "q06", "optionId": "d" },
+    { "questionId": "q07", "optionId": "a" },
+    { "questionId": "q08", "optionId": "a" },
+    { "questionId": "q09", "optionId": "a" },
+    { "questionId": "q10", "optionId": "a" },
+    { "questionId": "q11", "optionId": "a" },
+    { "questionId": "q12", "optionId": "b" },
+    { "questionId": "q13", "optionId": "a" },
+    { "questionId": "q14", "optionId": "a" },
+    { "questionId": "q15", "optionId": "a" },
+    { "questionId": "q16", "optionId": "a" },
+    { "questionId": "q17", "optionId": "a" },
+    { "questionId": "q18", "optionId": "a" },
+    { "questionId": "q19", "optionId": "a" },
+    { "questionId": "q20", "optionId": "a" }
+  ]
+}
+
+### Invalid: q12 offers only a, b and c, so "d" is rejected for this question
+POST http://localhost:8080/api/v1/quiz/submissions
+Content-Type: application/json
+
+{
+  "answers": [
+    { "questionId": "q01", "optionId": "a" },
+    { "questionId": "q12", "optionId": "d" }
+  ]
+}
+
+### Invalid: empty answer list
+POST http://localhost:8080/api/v1/quiz/submissions
+Content-Type: application/json
+
+{
+  "answers": []
+}
