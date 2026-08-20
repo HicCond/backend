@@ -2,8 +2,10 @@ package com.example.quiz.service;
 
 import com.example.quiz.config.QuizProperties;
 import com.example.quiz.dto.QuestionDto;
+import com.example.quiz.dto.QuizResultDto;
 import com.example.quiz.dto.QuizRulesDto;
 import com.example.quiz.dto.ScoringRuleDto;
+import com.example.quiz.dto.SubmitAnswersRequest;
 import com.example.quiz.entity.QuestionEntity;
 import com.example.quiz.mapper.QuestionMapper;
 import com.example.quiz.repository.QuestionRepository;
@@ -28,6 +30,8 @@ public class QuizService {
 
 	QuestionRepository questionRepository;
 	QuestionMapper questionMapper;
+	AnswerValidator answerValidator;
+	ScoringService scoringService;
 	QuizProperties quizProperties;
 
 	public QuizRulesDto getRules() {
@@ -43,6 +47,16 @@ public class QuizService {
 
 	public List<QuestionDto> getQuestions() {
 		return questionMapper.toDtoList(questionRepository.findAllByOrderByIdAsc());
+	}
+
+	public QuizResultDto submit(SubmitAnswersRequest request) {
+		List<QuestionEntity> questions = questionRepository.findAllByOrderByIdAsc();
+		answerValidator.validate(questions, request);
+		QuizResultDto result = scoringService.evaluate(questions, request);
+		log.info("Submission evaluated: score={}/{}, correct={}, incorrect={}, passed={}",
+				result.totalScore(), result.maxScore(), result.correctCount(), result.incorrectCount(),
+				result.passed());
+		return result;
 	}
 
 	private List<ScoringRuleDto> scoringBreakdown(List<QuestionEntity> questions) {
