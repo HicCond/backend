@@ -23,3 +23,8 @@ spring:
     console:
       enabled: true
       path: /h2-console
+
+quiz:
+  title: "World Geography"
+  description: "Twenty multiple-choice questions about the physical and political geography of the world. Each question is worth a fixed number of points; you pass by scoring more than 600 out of 1000."
+  passing-score: 600
